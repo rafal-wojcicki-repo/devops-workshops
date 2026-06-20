@@ -1,0 +1,73 @@
+name: CI/CD
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: 01-ci-lab
+
+    strategy:
+      matrix:
+        version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.version }}
+
+      - name: Use cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: pip-${{runner.os}}-${{ hashFiles('01-ci-lab/requirements.txt') }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run test
+        run: pytest
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: test
+
+    defaults:
+      run:
+        working-directory: 01-ci-lab
+
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::990393187402:role/test-role-github
+          aws-region: eu-central-1
+
+      - name: Prepare Lambda package
+        run: |
+          cp app/calculator.py lambda_function.py
+          zip function.zip lambda_function.py
+
+      - name: Update Lambda package
+        run: |
+          if aws lambda get-function --function-name calculator-app >/dev/null 2>&1; then
+            aws lambda update-function-code \
+              --function-name calculator-app \
+              --zip-file fileb://function.zip
+          else
+            echo "Skipping deploy because Lambda function calculator-app does not exist in eu-central-1."
+          fi
