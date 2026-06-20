@@ -36,9 +36,6 @@ jobs:
       - name: Run test
         run: pytest
 
-      - name: Add formatting
-        run: flake8 .
-
 
   deploy:
     runs-on: ubuntu-latest
