@@ -67,6 +67,7 @@ jobs:
 
       - name: Prepare Lambda package
         run: |
+          # The deploy target expects the handler module to be named lambda_function.py.
           cp app/calculator.py lambda_function.py
           zip function.zip lambda_function.py
 
