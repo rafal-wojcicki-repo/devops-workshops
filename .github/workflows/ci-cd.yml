@@ -72,6 +72,7 @@ jobs:
 
       - name: Update Lambda package
         run: |
+          # In this workshop repository the Lambda may be created manually before CI is wired up.
           if aws lambda get-function --function-name "$LAMBDA_FUNCTION_NAME" >/dev/null 2>&1; then
             aws lambda update-function-code \
               --function-name "$LAMBDA_FUNCTION_NAME" \
