@@ -49,6 +49,10 @@ jobs:
     permissions:
       id-token: write
 
+    env:
+      AWS_REGION: eu-central-1
+      LAMBDA_NAME: hello-student
+
     steps:
 
       - name: Checkout repository
