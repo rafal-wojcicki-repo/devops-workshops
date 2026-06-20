@@ -65,8 +65,16 @@ jobs:
           cp app/calculator.py lambda_function.py
           zip function.zip lambda_function.py
 
+      - name: Create Lambda
+        run: |
+          --function-name ${{ env.LAMBDA_NAME }} \
+          --zip-file fileb://function.zip \
+          --role arn:aws:iam::990393187402:role/service-role/hello-student-role-lfo1abhd
+          --handler lambda_function.lambda_handler \
+          --runtime python3.13
+
       - name: Update Lambda package
         run: |
           aws lambda update-function-code \
-            --function-name hello-student \
+            --function-name ${{ env.LAMBDA_NAME }} \
             --zip-file fileb://function.zip
