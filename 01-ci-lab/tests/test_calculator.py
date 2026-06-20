@@ -36,3 +36,8 @@ def test_lambda_handler_rejects_missing_fields():
 def test_lambda_handler_propagates_divide_by_zero():
     with pytest.raises(ZeroDivisionError):
         lambda_handler({"a": 10, "b": 0, "operation": "divide"}, None)
+
+
+def test_lambda_handler_rejects_unsupported_operation():
+    with pytest.raises(ValueError, match="Unsupported operation"):
+        lambda_handler({"a": 10, "b": 2, "operation": "subtract"}, None)
