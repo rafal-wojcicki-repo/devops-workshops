@@ -29,7 +29,7 @@ def test_lambda_handler_accepts_json_body():
 
 
 def test_lambda_handler_rejects_missing_fields():
-    with pytest.raises(ValueError, match="Missing required fields: operation"):
+    with pytest.raises(ValueError, match="Missing required field: operation"):
         lambda_handler({"a": 10, "b": 2}, None)
 
 

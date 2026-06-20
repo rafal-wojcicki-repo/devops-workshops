@@ -23,8 +23,9 @@ def lambda_handler(event, context):
     required_fields = ("a", "b", "operation")
     missing_fields = [field for field in required_fields if field not in body]
     if missing_fields:
+        field_label = "field" if len(missing_fields) == 1 else "fields"
         raise ValueError(
-            f"Missing required fields: {', '.join(missing_fields)}"
+            f"Missing required {field_label}: {', '.join(missing_fields)}"
         )
 
     a = body["a"]
