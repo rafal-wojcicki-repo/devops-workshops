@@ -41,3 +41,13 @@ def test_lambda_handler_propagates_divide_by_zero():
 def test_lambda_handler_rejects_unsupported_operation():
     with pytest.raises(ValueError, match="Unsupported operation"):
         lambda_handler({"a": 10, "b": 2, "operation": "subtract"}, None)
+
+
+def test_lambda_handler_rejects_invalid_json():
+    with pytest.raises(ValueError, match="Request body must be valid JSON"):
+        lambda_handler({"body": "{not-json"}, None)
+
+
+def test_lambda_handler_rejects_non_numeric_values():
+    with pytest.raises(TypeError, match="Fields a and b must be numeric"):
+        lambda_handler({"a": "10", "b": 2, "operation": "add"}, None)
