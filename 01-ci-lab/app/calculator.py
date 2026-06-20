@@ -14,6 +14,13 @@ def lambda_handler(event, context):
     if isinstance(body, str):
         body = json.loads(body)
 
+    required_fields = ("a", "b", "operation")
+    missing_fields = [field for field in required_fields if field not in body]
+    if missing_fields:
+        raise ValueError(
+            f"Missing required fields: {', '.join(missing_fields)}"
+        )
+
     a = body["a"]
     b = body["b"]
     operation = body["operation"]

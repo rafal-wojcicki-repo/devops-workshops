@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from app.calculator import add, divide, lambda_handler
 
 
@@ -24,3 +26,13 @@ def test_lambda_handler_accepts_json_body():
     )
 
     assert response == {"statusCode": 200, "body": 5}
+
+
+def test_lambda_handler_rejects_missing_fields():
+    with pytest.raises(ValueError, match="Missing required fields: operation"):
+        lambda_handler({"a": 10, "b": 2}, None)
+
+
+def test_lambda_handler_propagates_divide_by_zero():
+    with pytest.raises(ZeroDivisionError):
+        lambda_handler({"a": 10, "b": 0, "operation": "divide"}, None)
