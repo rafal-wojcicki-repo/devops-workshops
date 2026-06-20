@@ -3,6 +3,9 @@ on: [ push ]
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 01-ci-lab
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -16,10 +19,7 @@ jobs:
         run: |
           echo "Installing dependencies..."
           pip install -r requirements.txt
-        working-directory: 01-ci-lab
-
       - name: Run tests
         run: |
           echo "Running tests..."
           pytest
-        working-directory: 01-ci-lab
