@@ -2,6 +2,11 @@ name: CI/CD
 
 on: [push]
 
+env:
+  AWS_REGION: eu-central-1
+  AWS_ROLE_TO_ASSUME: arn:aws:iam::990393187402:role/test-role-github
+  LAMBDA_FUNCTION_NAME: calculator-app
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -57,8 +62,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
-          role-to-assume: arn:aws:iam::990393187402:role/test-role-github
-          aws-region: eu-central-1
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Prepare Lambda package
         run: |
@@ -67,10 +72,10 @@ jobs:
 
       - name: Update Lambda package
         run: |
-          if aws lambda get-function --function-name calculator-app >/dev/null 2>&1; then
+          if aws lambda get-function --function-name "$LAMBDA_FUNCTION_NAME" >/dev/null 2>&1; then
             aws lambda update-function-code \
-              --function-name calculator-app \
+              --function-name "$LAMBDA_FUNCTION_NAME" \
               --zip-file fileb://function.zip
           else
-            echo "Skipping deploy because Lambda function calculator-app does not exist in eu-central-1."
+            echo "Skipping deploy because Lambda function $LAMBDA_FUNCTION_NAME does not exist in $AWS_REGION."
           fi
