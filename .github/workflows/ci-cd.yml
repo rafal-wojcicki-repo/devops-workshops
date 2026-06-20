@@ -69,4 +69,4 @@ jobs:
         run: |
           aws lambda update-function-code \
           --function-name calculator-app
-          --zip-file function.zip
+          --zip-file fileb://function.zip
