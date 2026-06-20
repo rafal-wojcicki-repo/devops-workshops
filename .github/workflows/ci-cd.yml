@@ -68,5 +68,5 @@ jobs:
       - name: Update Lambda package
         run: |
           aws lambda update-function-code \
-          --function-name hello-student
-          --zip-file fileb://function.zip
+            --function-name hello-student \
+            --zip-file fileb://function.zip
